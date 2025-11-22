@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+@theme {
+  /* Klaviyo Brand Colors */
+  --color-klaviyo-charcoal: #232121;
+  --color-klaviyo-poppy: #f96353;
+  --color-klaviyo-sky: #9cd1ef;
+  --color-klaviyo-violet: #9176d1;
+  --color-klaviyo-pink: #f1c0f2;
+
+  /* Custom Border Radius */
+  --radius-klaviyo: 32px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.6s ease-out;
+}
