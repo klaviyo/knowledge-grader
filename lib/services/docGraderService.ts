@@ -4,23 +4,37 @@ import { getOpenAIClient } from "../openai";
 import type { DocGraderOutput } from "../schemas/docGrader";
 import { previewChunking } from "../utils/chunking";
 
-// Load prompts and rubric once at startup
-const RUBRIC = readFileSync(
-	join(process.cwd(), "lib/data/rubric.txt"),
-	"utf-8",
-);
-const SYSTEM_PROMPT = readFileSync(
-	join(process.cwd(), "lib/data/system-prompt.txt"),
-	"utf-8",
-);
-const USER_PROMPT_TEMPLATE = readFileSync(
-	join(process.cwd(), "lib/data/user-prompt-template.txt"),
-	"utf-8",
-);
+// Lazy-load prompts and rubric to ensure compatibility with Vercel
+let RUBRIC: string | null = null;
+let SYSTEM_PROMPT: string | null = null;
+let USER_PROMPT_TEMPLATE: string | null = null;
+
+function loadPrompts() {
+	if (!RUBRIC) {
+		RUBRIC = readFileSync(
+			join(process.cwd(), "lib/data/rubric.txt"),
+			"utf-8",
+		);
+	}
+	if (!SYSTEM_PROMPT) {
+		SYSTEM_PROMPT = readFileSync(
+			join(process.cwd(), "lib/data/system-prompt.txt"),
+			"utf-8",
+		);
+	}
+	if (!USER_PROMPT_TEMPLATE) {
+		USER_PROMPT_TEMPLATE = readFileSync(
+			join(process.cwd(), "lib/data/user-prompt-template.txt"),
+			"utf-8",
+		);
+	}
+}
 
 export async function gradeDocumentService(
 	documentText: string,
 ): Promise<DocGraderOutput> {
+	// Load prompts on first use
+	loadPrompts();
 	// Generate chunk preview to help with evaluation
 	const chunks = previewChunking(documentText);
 	const chunkPreview = chunks
@@ -28,6 +42,10 @@ export async function gradeDocumentService(
 		.join("\n\n");
 
 	// Build user prompt from template
+	if (!RUBRIC || !SYSTEM_PROMPT || !USER_PROMPT_TEMPLATE) {
+		throw new Error("Failed to load prompt templates");
+	}
+
 	const userPrompt = USER_PROMPT_TEMPLATE.replace(
 		"{{CHUNK_PREVIEW}}",
 		chunkPreview,
