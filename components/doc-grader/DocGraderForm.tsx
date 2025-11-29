@@ -2,8 +2,17 @@
 
 import { useState } from "react";
 import type { DocGraderOutput } from "@/lib/schemas/docGrader";
+import {
+	ArrowLeftIcon,
+	ArrowRightIcon,
+	CheckIcon,
+	CopyIcon,
+	ErrorIcon,
+	SpinnerIcon,
+} from "../icons/Icons";
 import { ChunkPreview } from "./ChunkPreview";
 import { CollapsedFeedback } from "./CollapsedFeedback";
+import { FileDropZone } from "./FileDropZone";
 import { LoadingState } from "./LoadingState";
 
 export function DocGraderForm() {
@@ -96,136 +105,34 @@ export function DocGraderForm() {
 			{!result && !loading ? (
 				<div>
 					<form onSubmit={handleSubmit} className="space-y-4">
-						{/* Big Drag and Drop Area */}
-						<div
-							className={`relative bg-white rounded-2xl border-2 shadow-lg transition-all ${
-								isDragging
-									? "border-klaviyo-poppy border-dashed bg-klaviyo-poppy/5 scale-[1.02]"
-									: documentText
-										? "border-gray-200"
-										: "border-dashed border-gray-300 hover:border-klaviyo-violet"
-							}`}
+						<FileDropZone
+							documentText={documentText}
+							isDragging={isDragging}
+							loading={loading}
+							onTextChange={setDocumentText}
 							onDragOver={handleDragOver}
 							onDragLeave={handleDragLeave}
 							onDrop={handleDrop}
-						>
-							{!documentText && !loading && (
-								<div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
-									<div className="text-center px-6">
-										<svg
-											className="w-20 h-20 text-gray-300 mx-auto mb-4"
-											fill="none"
-											stroke="currentColor"
-											viewBox="0 0 24 24"
-										>
-											<path
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												strokeWidth={1.5}
-												d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-											/>
-										</svg>
-										<p className="text-xl font-semibold text-gray-400 mb-2">
-											Drop your file here
-										</p>
-										<p className="text-sm text-gray-400">
-											or click to type/paste your content
-										</p>
-										<p className="text-xs text-gray-300 mt-3">
-											Accepts .txt and .md files
-										</p>
-									</div>
-								</div>
-							)}
+						/>
 
-							{isDragging && (
-								<div className="absolute inset-0 flex items-center justify-center bg-klaviyo-poppy/10 rounded-2xl z-20 pointer-events-none">
-									<div className="text-center">
-										<svg
-											className="w-24 h-24 text-klaviyo-poppy mx-auto mb-3 animate-bounce"
-											fill="none"
-											stroke="currentColor"
-											viewBox="0 0 24 24"
-										>
-											<path
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												strokeWidth={2}
-												d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-											/>
-										</svg>
-										<p className="text-2xl font-bold text-klaviyo-poppy">
-											Drop it!
-										</p>
-									</div>
-								</div>
-							)}
-
-							<textarea
-								id="document"
-								value={documentText}
-								onChange={(e) => setDocumentText(e.target.value)}
-								className="w-full h-[500px] p-8 text-base border-0 focus:ring-0 focus:outline-none resize-none placeholder:text-gray-300 bg-transparent relative z-10"
-								placeholder=""
-								disabled={loading}
-								required
-							/>
-
-							<div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-								<span className="text-xs text-gray-400">
-									{documentText.length > 0
-										? `${documentText.length.toLocaleString()} characters`
-										: "Ready for your content"}
-								</span>
-								<button
-									type="submit"
-									disabled={loading || !documentText.trim()}
-									className="inline-flex items-center gap-2 px-8 py-3 bg-klaviyo-poppy text-white font-bold text-base rounded-xl hover:bg-red-500 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl disabled:shadow-none"
-								>
-									{loading ? (
-										<>
-											<svg
-												className="animate-spin h-5 w-5"
-												xmlns="http://www.w3.org/2000/svg"
-												fill="none"
-												viewBox="0 0 24 24"
-											>
-												<circle
-													className="opacity-25"
-													cx="12"
-													cy="12"
-													r="10"
-													stroke="currentColor"
-													strokeWidth="4"
-												></circle>
-												<path
-													className="opacity-75"
-													fill="currentColor"
-													d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-												></path>
-											</svg>
-											Analyzing...
-										</>
-									) : (
-										<>
-											Check Quality
-											<svg
-												className="w-5 h-5"
-												fill="none"
-												stroke="currentColor"
-												viewBox="0 0 24 24"
-											>
-												<path
-													strokeLinecap="round"
-													strokeLinejoin="round"
-													strokeWidth={2}
-													d="M13 7l5 5m0 0l-5 5m5-5H6"
-												/>
-											</svg>
-										</>
-									)}
-								</button>
-							</div>
+						<div className="flex justify-end">
+							<button
+								type="submit"
+								disabled={loading || !documentText.trim()}
+								className="inline-flex items-center gap-2 px-8 py-3 bg-klaviyo-poppy text-white font-bold text-base rounded-xl hover:bg-red-500 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl disabled:shadow-none"
+							>
+								{loading ? (
+									<>
+										<SpinnerIcon className="animate-spin h-5 w-5" />
+										Analyzing...
+									</>
+								) : (
+									<>
+										Check Quality
+										<ArrowRightIcon className="w-5 h-5" />
+									</>
+								)}
+							</button>
 						</div>
 					</form>
 
@@ -238,17 +145,7 @@ export function DocGraderForm() {
 
 					{error && (
 						<div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3">
-							<svg
-								className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5"
-								fill="currentColor"
-								viewBox="0 0 20 20"
-							>
-								<path
-									fillRule="evenodd"
-									d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-									clipRule="evenodd"
-								/>
-							</svg>
+							<ErrorIcon className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
 							<div>
 								<p className="text-sm font-semibold text-red-900">Error</p>
 								<p className="text-sm text-red-700 mt-1">{error}</p>
@@ -291,61 +188,27 @@ export function DocGraderForm() {
 						{/* Action Buttons */}
 						<div className="flex items-center justify-between pt-4 border-t border-gray-200">
 							<button
+								type="button"
 								onClick={handleReset}
 								className="inline-flex items-center gap-2 px-5 py-2.5 text-gray-700 font-semibold text-sm rounded-lg border border-gray-300 hover:bg-gray-50 transition-all duration-200"
 							>
-								<svg
-									className="w-4 h-4"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										strokeWidth={2}
-										d="M10 19l-7-7m0 0l7-7m-7 7h18"
-									/>
-								</svg>
+								<ArrowLeftIcon className="w-4 h-4" />
 								Check Another
 							</button>
 							<button
+								type="button"
 								onClick={handleCopy}
 								className="inline-flex items-center gap-2 px-8 py-3 bg-klaviyo-poppy text-white font-bold text-base rounded-xl hover:bg-red-500 transition-all duration-200 shadow-lg hover:shadow-xl"
 							>
 								{copied ? (
 									<>
-										<svg
-											className="w-5 h-5"
-											fill="none"
-											stroke="currentColor"
-											viewBox="0 0 24 24"
-										>
-											<path
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												strokeWidth={2}
-												d="M5 13l4 4L19 7"
-											/>
-										</svg>
+										<CheckIcon className="w-5 h-5" />
 										Copied!
 									</>
 								) : (
 									<>
 										Copy Content
-										<svg
-											className="w-5 h-5"
-											fill="none"
-											stroke="currentColor"
-											viewBox="0 0 24 24"
-										>
-											<path
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												strokeWidth={2}
-												d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-											/>
-										</svg>
+										<CopyIcon className="w-5 h-5" />
 									</>
 								)}
 							</button>

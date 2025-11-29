@@ -1,27 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { chunkSentences, splitSentences } from "@/lib/utils/chunking";
 
 interface ChunkPreviewProps {
 	documentText: string;
-}
-
-function splitSentences(text: string): string[] {
-	return text
-		.split(/(?<=[.!?])\s+(?=[A-Z])|\n+/)
-		.map((s) => s.trim())
-		.filter((s) => s.length > 0);
-}
-
-function chunkSentences(
-	sentences: string[],
-	chunkSize: number = 6,
-): string[][] {
-	const chunks: string[][] = [];
-	for (let i = 0; i < sentences.length; i += chunkSize) {
-		chunks.push(sentences.slice(i, i + chunkSize));
-	}
-	return chunks;
 }
 
 export function ChunkPreview({ documentText }: ChunkPreviewProps) {

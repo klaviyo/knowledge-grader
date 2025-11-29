@@ -1,0 +1,65 @@
+Evaluate this document against the rubric below, paying SPECIAL ATTENTION to chunking optimization.
+
+Return JSON with:
+{
+  "grade": <0-100>,
+  "suggestions": [{"category": "...", "issue": "...", "fix": "..."}],
+  "rewrittenDocument": "<improved version>"
+}
+
+ACTUAL CHUNK BREAKDOWN (how the AI Agent system will split this document):
+{{CHUNK_PREVIEW}}
+
+ANALYZE THE CHUNKS ABOVE:
+- Look for orphaned headers (headers in chunks without their content)
+- Check if related info spans too many chunks (remember: only 5 retrieved!)
+- Identify bullet lists/tables that create many small "sentences"
+- Ensure each chunk is semantically complete and useful on its own
+
+KEY CHUNKING RULES:
+- Splits on: (?<=[.!?])\s+(?=[A-Z]) OR \n+ (newlines)
+- Each line break creates a sentence boundary
+- Grouped into exactly 6 sentences per chunk (no overlap)
+- **CRITICAL: Only 5 chunks are retrieved from database per query**
+- Bullet points and tables chunk poorly (each line = new sentence)
+
+ECOMMERCE CONTEXT:
+These documents are for AI agents helping ecommerce merchants. Users primarily ask about:
+- Return policies and processes
+- Shipping methods, rates, and timeframes
+- Exchange procedures
+- Product-specific information (sizing, materials, care instructions)
+
+Common chunking problems in ecommerce docs:
+- Shipping rate tables split from method names (e.g., "Ground Shipping" header separated from rates)
+- Multiple shipping methods in separate chunks (Ground, Standard, Express) - only 5 chunks retrieved means incomplete info
+- Long bullet lists split across chunks - some bullets lost due to 5-fragment limit
+- Return eligibility criteria separated from return instructions
+- Product condition requirements split from return/exchange policies
+- Time limits (e.g., "30-day return window") separated from their context
+- Tables that span many lines get chunked poorly and incompletely retrieved
+
+EVALUATION CRITERIA - Include chunking-specific suggestions:
+- "Document Structure & Chunking": Evaluate if content is organized for optimal chunking. Flag issues like:
+  * Headers separated from content (CRITICAL for shipping/return sections)
+  * Related information split across likely chunk boundaries (e.g., rates split from shipping methods)
+  * **Using bullet points or tables** - these are NOT handled well by the chunker, recommend prose instead
+  * **Multiple related sections** (e.g., Ground, Standard, Express shipping) - with only 5 fragments retrieved, separate sections mean incomplete info. Recommend consolidating related options into single, concise sections
+  * Lists or tables that span too many lines (especially rate tables, return conditions)
+  * Missing context that makes chunks unclear (e.g., a chunk with only rates but no method name)
+  * Policies split from their eligibility criteria or timeframes
+  * Information spread across too many potential chunks (remember: only 5 retrieved!)
+- "Ecommerce Clarity": Ensure policies are clear, complete, and structured for retrieval:
+  * Return windows must be stated with the policy (not orphaned)
+  * Shipping costs must be with shipping method descriptions
+  * Exchange conditions must be with exchange instructions
+  * Product specifics grouped logically (sizing with size charts, not split)
+  * **Consolidate related options** (e.g., all shipping methods in one compact section) to ensure complete retrieval within 5-fragment limit
+  * **Avoid bullet lists and tables** - convert to narrative prose that chunks cleanly
+- Follow all other rubric criteria as well
+
+RUBRIC (from Klaviyo Help):
+{{RUBRIC}}
+
+DOCUMENT TO EVALUATE:
+{{DOCUMENT}}
