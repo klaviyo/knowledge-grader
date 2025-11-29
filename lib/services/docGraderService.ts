@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { openai } from "../openai";
+import { getOpenAIClient } from "../openai";
 import type { DocGraderOutput } from "../schemas/docGrader";
 import { previewChunking } from "../utils/chunking";
 
@@ -35,6 +35,7 @@ export async function gradeDocumentService(
 		.replace("{{RUBRIC}}", RUBRIC)
 		.replace("{{DOCUMENT}}", documentText);
 
+	const openai = getOpenAIClient();
 	const completion = await openai.chat.completions.create({
 		model: "gpt-4.1-2025-04-14",
 		response_format: { type: "json_object" },
