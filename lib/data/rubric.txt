@@ -1,0 +1,64 @@
+How to Optimize Content for your Customer Agent Estimated 5 minute read | Updated Sep 19, 2025, 2:55 PM EST Table of contents You will learn Before you begin Set it up Best practices Measure success Troubleshooting FAQ Next steps Additional resources Generating... You will learn You will learn In this guide, you&#x27;ll learn how to structure your knowledge sources so your Customer Agent can find and deliver the best answers to your customers. Well-structured content leads to more resolved inquiries, fewer escalations to your team, and happier shoppers. Before you begin Before you begin 
+ Prerequisites: Customer Agent must be enabled for your account. You should have at least one knowledge source (e.g., website sync, snippets, or files) connected. 
+ Availability: Available for all accounts with Customer Agent. 
+ Time to complete: Approximately 15–20 minutes to review and format your first few documents. 
+ Set it up Set it up To optimize your content, you first need to review your existing knowledge sources and add new, well-formatted ones. 
+ Navigate to the Customer Agent tab in your account. 
+ Click the Knowledge tab to view your existing sources. 
+ Review the content in your synced website, snippets, and uploaded files for the formatting best practices outlined below. 
+ 
+ To add a new, optimized source, click Add source and choose Add snippet, Upload file, or Add webpage. 
+ 
+ Fill out the information to add your content, ensuring it is formatted according to the best practices. 
+ Once added, test your changes by asking the Customer Agent a question related to the new content in the Playground tab. 
+ Best practices Best practices How you structure your content is just as important as what it says. Proper formatting helps Customer Agent quickly scan and retrieve the correct information. 
+ Use a clear, scannable structure. Headings, tables, and lists make it much easier for Customer Agent to find the relevant piece of information. Use H1/H2 headings for different sections and bullet points for lists. 
+ 
+ Restate the question in the answer. This practice removes ambiguity and helps the Customer Agent confidently match the right answer to a shopper&#x27;s question. Avoid simple “yes” or “no” responses; instead, use full sentences. 
+ 
+ Good: 
+ Q: Do you ship to Canada? 
+ A: Yes, our shipping policy includes delivery to all Canadian provinces. 
+
+ Bad: 
+ Q: Do you ship to Canada? 
+ A: Yes. 
+
+ Use bulleted lists for processes or options. Customer Agent performs better when long paragraphs are broken into clear, itemized lists. This is especially helpful for step-by-step instructions. 
+ 
+ Good: To be eligible for a return, your item must be: 
+ Unworn and in its original condition. 
+ In the original packaging. 
+ Returned within 30 days of purchase. 
+
+ Bad: To be eligible for a return, your item must be unworn and in its original condition, and it needs to be in the original packaging. You must also make sure it is returned within 30 days of purchase. 
+
+ Keep information consistent. Avoid conflicting answers across your knowledge sources. For example, if your synced shipping policy page contradicts an uploaded FAQ document, the Customer Agent may provide an incorrect answer. 
+ Prefer specific, focused documents. A single, massive document covering all company policies is less effective than several smaller documents (e.g., one for returns, one for shipping, and one for warranties). 
+ Provide context for images and videos. Customer Agent cannot “see” images or “watch” videos. If a document relies on multimedia, you must also provide a text-based explanation. 
+ Measure success Measure success 
+ Where to view results: Navigate to the Customer Agent tab and click Overview . 
+ 
+ Key metrics to watch: 
+ Resolved by AI rate: A high percentage indicates Customer Agent is successfully answering questions without needing a human. 
+ Top tags: Review the most common questions to identify which knowledge sources you should optimize first for the biggest impact. 
+
+ If your resolution rate is low, try: 
+ Identifying the most common unresolved questions from your analytics. 
+ Creating a new, dedicated snippet or document that answers those specific questions. 
+ Reviewing existing sources for conflicting information and removing outdated files. 
+
+ Troubleshooting Troubleshooting Symptom: The Customer Agent says is not answering a question you&#x27;ve added content for. 
+ Likely cause: The information may be in a format that is difficult for the AI to read, such as a long paragraph without clear headings, or it may conflict with another source. 
+ Fix: Reformat the content using headings and bullet points. Check for and remove any conflicting information from other knowledge sources. 
+ Symptom: The Customer Agent gives an outdated answer to a policy question (e.g., an old shipping deadline). 
+ Likely cause: An old file or webpage with the outdated information is still in your knowledge base. 
+ Fix: Navigate to the Knowledge tab, find the outdated file or webpage, and delete it. If the information is on your website, resync the page after updating it. 
+ FAQ FAQ Q: Should I include instructions on tone of voice or personality in my knowledge base? A: No. The knowledge base should only contain factual answers for Customer Agent to share. Adding behavioral instructions (like "be friendly") can confuse the Customer Agent and interfere with its ability to find the correct information. Q: Can Customer Agent read content that appears when a user clicks an accordion or "read more" link? A: Customer Agent may not be able to read all dynamic content on your website. If you have important information in accordions or other dynamic elements, it is best to create a dedicated snippet or document with that content to ensure the Customer Agent can access it. Q: What should I do after I update a page on my website? A: After updating a webpage that is synced as a knowledge source, you should navigate to the Knowledge tab and resync the page to ensure Customer Agent has the most current information. Next steps Next steps 
+ Audit your knowledge base. Regularly review your content to find and remove outdated information, especially for policies that change often (e.g., holiday promotions). 
+ Identify and prioritize high-impact content. Use the Overview tab to find the most common customer questions and focus your optimization efforts on those topics first. 
+ Additional resources Additional resources 
+ Getting started with Customer Agent 
+ How to train and test your AI service agent
+
+--- Article length: 6555 characters ---

@@ -1,11 +1,13 @@
-import { openai } from '../openai';
-import { DocGraderOutput } from '../schemas/docGrader';
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { openai } from "../openai";
+import type { DocGraderOutput } from "../schemas/docGrader";
 
-const DEFAULT_RUBRIC_URL = 'https://help.klaviyo.com/hc/en-us/articles/40418535535387';
-
-// Cache rubric for 1 hour
-let rubricCache: { content: string; timestamp: number } | null = null;
-const CACHE_TTL = 60 * 60 * 1000; // 1 hour in ms
+// Load rubric once at startup
+const RUBRIC = readFileSync(
+	join(process.cwd(), "lib/data/rubric.txt"),
+	"utf-8",
+);
 
 /**
  * Splits text into sentences using the exact algorithm from the AI Agent system.
@@ -14,22 +16,25 @@ const CACHE_TTL = 60 * 60 * 1000; // 1 hour in ms
  * 2. One or more newlines: \n+
  */
 function splitSentences(text: string): string[] {
-  return text
-    .split(/(?<=[.!?])\s+(?=[A-Z])|\n+/)
-    .map(s => s.trim())
-    .filter(s => s.length > 0);
+	return text
+		.split(/(?<=[.!?])\s+(?=[A-Z])|\n+/)
+		.map((s) => s.trim())
+		.filter((s) => s.length > 0);
 }
 
 /**
  * Chunks sentences into groups of 6 (without overlap).
  * This mirrors the exact chunking behavior of the AI Agent system.
  */
-function chunkSentences(sentences: string[], chunkSize: number = 6): string[][] {
-  const chunks: string[][] = [];
-  for (let i = 0; i < sentences.length; i += chunkSize) {
-    chunks.push(sentences.slice(i, i + chunkSize));
-  }
-  return chunks;
+function chunkSentences(
+	sentences: string[],
+	chunkSize: number = 6,
+): string[][] {
+	const chunks: string[][] = [];
+	for (let i = 0; i < sentences.length; i += chunkSize) {
+		chunks.push(sentences.slice(i, i + chunkSize));
+	}
+	return chunks;
 }
 
 /**
@@ -37,46 +42,27 @@ function chunkSentences(sentences: string[], chunkSize: number = 6): string[][] 
  * Returns an array of chunk strings for analysis.
  */
 export function previewChunking(text: string): string[] {
-  const sentences = splitSentences(text);
-  const chunks = chunkSentences(sentences);
-  return chunks.map(chunk => chunk.join('\n'));
-}
-
-async function fetchRubric(url: string): Promise<string> {
-  const now = Date.now();
-  if (rubricCache && now - rubricCache.timestamp < CACHE_TTL) {
-    return rubricCache.content;
-  }
-
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch rubric: ${response.statusText}`);
-  }
-
-  const html = await response.text();
-  rubricCache = { content: html, timestamp: now };
-  return html;
+	const sentences = splitSentences(text);
+	const chunks = chunkSentences(sentences);
+	return chunks.map((chunk) => chunk.join("\n"));
 }
 
 export async function gradeDocumentService(
-  documentText: string,
-  rubricUrl: string = DEFAULT_RUBRIC_URL
+	documentText: string,
 ): Promise<DocGraderOutput> {
-  const rubric = await fetchRubric(rubricUrl);
+	// Generate chunk preview to help with evaluation
+	const chunks = previewChunking(documentText);
+	const chunkPreview = chunks
+		.map((chunk, i) => `CHUNK ${i + 1}:\n${chunk}\n---`)
+		.join("\n\n");
 
-  // Generate chunk preview to help with evaluation
-  const chunks = previewChunking(documentText);
-  const chunkPreview = chunks.map((chunk, i) =>
-    `CHUNK ${i + 1}:\n${chunk}\n---`
-  ).join('\n\n');
-
-  const completion = await openai.chat.completions.create({
-    model: 'gpt-4.1-2025-04-14',
-    response_format: { type: 'json_object' },
-    messages: [
-      {
-        role: 'system',
-        content: `You are a knowledge-base evaluator for AI agent documentation with expertise in RAG (Retrieval-Augmented Generation) systems.
+	const completion = await openai.chat.completions.create({
+		model: "gpt-4.1-2025-04-14",
+		response_format: { type: "json_object" },
+		messages: [
+			{
+				role: "system",
+				content: `You are a knowledge-base evaluator for AI agent documentation with expertise in RAG (Retrieval-Augmented Generation) systems.
 
 CRITICAL CHUNKING ALGORITHM:
 The AI Agent system uses this EXACT algorithm to split documents:
@@ -99,11 +85,11 @@ YOUR EVALUATION MUST:
 3. Ensure critical information stays within 6-sentence boundaries
 4. Remember: Only 5 chunks are retrieved per query - if info spans 10+ chunks, only partial info retrieved!
 
-Evaluate documents against the rubric and return structured JSON feedback.`
-      },
-      {
-        role: 'user',
-        content: `Evaluate this document against the rubric below, paying SPECIAL ATTENTION to chunking optimization.
+Evaluate documents against the rubric and return structured JSON feedback.`,
+			},
+			{
+				role: "user",
+				content: `Evaluate this document against the rubric below, paying SPECIAL ATTENTION to chunking optimization.
 
 Return JSON with:
 {
@@ -164,18 +150,18 @@ EVALUATION CRITERIA - Include chunking-specific suggestions:
 - Follow all other rubric criteria as well
 
 RUBRIC (from Klaviyo Help):
-${rubric}
+${RUBRIC}
 
 DOCUMENT TO EVALUATE:
-${documentText}`
-      }
-    ]
-  });
+${documentText}`,
+			},
+		],
+	});
 
-  const result = completion.choices[0].message.content;
-  if (!result) {
-    throw new Error('No response from OpenAI');
-  }
+	const result = completion.choices[0].message.content;
+	if (!result) {
+		throw new Error("No response from OpenAI");
+	}
 
-  return JSON.parse(result) as DocGraderOutput;
+	return JSON.parse(result) as DocGraderOutput;
 }
